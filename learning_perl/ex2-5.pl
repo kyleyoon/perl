@@ -25,10 +25,9 @@ my $string = "";
 my $integer = 0;
 
 say encode('utf-8',"출력문자열을 입력하세요");
-$string = <STDIN>;
+chomp($string = <STDIN>);
 say encode('utf-8',"출력문자열을 반복할 횟수를 입력하시오");
-$integer = <STDIN>;
+chomp($integer = <STDIN>);
 
-chomp($string,$integer);
 say encode('utf-8',"출력결과");
 say $string x $integer;

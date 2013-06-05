@@ -21,8 +21,9 @@ my $first = 0;
 my $second = "";
 
 say encode('utf-8',"곱셉하고자 하는 두수를 하나씩 입력하시오");
-$first = <STDIN>;
-$second = <STDIN>;
-chomp($first,$second);
+say encode('utf-8',"첫번째 숫자:");
+chomp($first = <STDIN>);
+say encode('utf-8',"두번째 숫자:");
+chomp($second = <STDIN>);
 
 say encode('utf-8',"입력한 두수의 곱 : "), $first * $second;

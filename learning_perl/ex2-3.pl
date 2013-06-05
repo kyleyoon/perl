@@ -20,7 +20,7 @@ use Encode;
 my $pie = 3.141592654;
 my ($radius,$diameter) = (0,0);
 say encode('utf-8',"반지름을 입력하세요");
-$radius = <STDIN>;
+chomp($radius = <STDIN>);
 $diameter = 2 * $pie * $radius;
 
 $diameter = 0 if ($radius < 0); 
