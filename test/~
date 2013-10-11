@@ -1,0 +1,44 @@
+#!/usr/bin/env perl 
+#===============================================================================
+#
+#         FILE: sms.pl
+#
+#        USAGE: ./sms.pl  
+#
+#  DESCRIPTION: sms monthly statistics
+#
+#      OPTIONS: ---
+# REQUIREMENTS: ---
+#         BUGS: ---
+#        NOTES: ---
+#       AUTHOR: Kyle Yoon (), kyoon@wemakeprice.com
+# ORGANIZATION: 
+#      VERSION: 1.0
+#      CREATED: 2013/10/04 09½Ã 41ºĞ 54ÃÊ
+#     REVISION: ---
+#===============================================================================
+
+use strict;
+use warnings;
+use utf8;
+use LWP::UserAgent;
+use HTTP::Request::Common;
+
+my $browser = LWP::UserAgent->new;
+$browser->cookie_jar( {} );
+
+my $url = "https://www.n-forum.com/Member/Login.asp";
+my $response = $browser->post( $url, 
+	{'loginid' => 'namuinternet', 
+	'loginpass' => 'cjfxhd$%^', 
+	});
+print $response->headers->as_string;
+print $response->status_line;
+print $response->content;
+
+$url = "http://www.n-forum.com/Statistics/MonthStatExcel.asp?syy=2013&smm=09&eyy=2013&emm=09";
+$response = $browser->get( $url);
+
+#print $response->headers->as_string;
+#print $response->status_line;
+#print $response->content;
