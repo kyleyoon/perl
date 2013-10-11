@@ -23,7 +23,7 @@ use strict;
 use warnings;
 use autodie;
 
-use POSIX qw(strftime mktime);
+use DateTime;
 use Number::Format;
 use Data::Dumper;
 use LWP::UserAgent;
@@ -32,31 +32,35 @@ use URI;
 use URL::Encode qw(url_encode);
 use HTML::TokeParser::Simple;
  
-my ($second, $minute, $hour, $day, $cur_mon, $cur_year) = localtime();
-my $last_date = mktime(0, 0, 0, 1, $cur_mon-1, $cur_year);
-my ($year, $mon) = split ",", strftime('%Y,%m', localtime $last_date);
 my (@SMS, @LMS, @MMS, @TOTAL);
-my $user_LG = '';
-my $pass_LG	= '';
-my $user_HI = '';
-my $pass_HI = '';
+my $date = DateTime->now->subtract( months => 1 );
+my $year = $date->strftime("%Y");
+my $mon = $date->strftime("%m");
 
-## LWP::Protocol::https must be installed to use https with LWP
-my $url_LG  = 'https://sms.uplus.co.kr';
-my $path_LG = '/ver2/jsp/login/login_check.jsp';
-my $url_HI  = 'https://www.n-forum.com';
-my $path_HI = '/Member/Loginok.asp';
-my $html_path_LG	= 'ver2/jsp/msgbox/SMSTotStat.jsp';
-my $html_path_HI	= '/Ajax/GetStatistics01.asp';
+my %LG = (
+	user 		=> '', 
+	pass		=> '', 
+	url  		=> 'https://sms.uplus.co.kr', 
+	path 		=> '/ver2/jsp/login/login_check.jsp', 
+	html_path	=> 'ver2/jsp/msgbox/SMSTotStat.jsp', 
+);
+
+my %HI = (
+	user 		=> '', 
+	pass 		=> '', 
+	url  		=> 'https://www.n-forum.com', 
+	path 		=> '/Member/Loginok.asp', 
+	html_path	=> '/Ajax/GetStatistics01.asp', 
+);
 
 ## there were some duplicated arguments during capturing authentication packet on Wireshark.
 my $hash_ref_LG = {
 	checkbox => 'checkbox',
-	logid_c  => $user_LG,
-	logid    => $user_LG,
-	logId    => $user_LG,
-	pw       => $pass_LG,
-	passwd   => $pass_LG,
+	logid_c  => $LG{user},
+	logid    => $LG{user},
+	logId    => $LG{user},
+	pw       => $LG{pass},
+	passwd   => $LG{pass},
 	password => '',		 ## it was an empty on the captured packet.
 	path     => url_encode('/ver2/jsp/main/index.jsp'),
 	x        => 1,		 ## not sure what are the parameters of x,  y
@@ -65,8 +69,8 @@ my $hash_ref_LG = {
 
 my $hash_ref_HI = {
 	checkbox => 'checkbox',
-	loginid  => $user_HI,
-	loginpass=> $pass_HI,
+	loginid  => $HI{user},
+	loginpass=> $HI{pass},
 	path     => url_encode('/index.asp'),
 };
  
@@ -91,8 +95,8 @@ my $html_params_HI	= {
 };
 
 
-auth_site($url_LG, $path_LG, $hash_ref_LG, $html_path_LG, $html_params_LG, "LG");
-auth_site($url_HI, $path_HI, $hash_ref_HI, $html_path_HI, $html_params_HI, "HI");
+auth_site($LG{url}, $LG{path}, $hash_ref_LG, $LG{html_path}, $html_params_LG, "LG");
+auth_site($HI{url}, $HI{path}, $hash_ref_HI, $HI{html_path}, $html_params_HI, "HI");
 	
 my $num = new Number::Format;
 my $TOTAL = $SMS[0]+$SMS[1]+$LMS[0]+$LMS[1]+$MMS[0]+$MMS[1];
